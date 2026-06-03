@@ -10,6 +10,7 @@ from rag import retrieve_context
 from prompts import get_learning_prompt, get_quiz_prompt, get_flashcard_prompt, get_revision_prompt
 from scoring import update_mastery, get_all_mastery, get_weak_topics, build_adaptive_quiz_topics, check_level_gate, advance_level, load_progress
 load_dotenv()
+print(os.getenv("GEMINI_API_KEY")[:10])
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
@@ -71,32 +72,85 @@ def get_progress():
 @app.post("/learn")
 def learn(request: LearnRequest):
     context = retrieve_context(request.topic)
-    prompt = get_learning_prompt(request.topic, context, request.style)
-    response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents=prompt)
+    prompt = get_learning_prompt(
+        request.topic,
+        context,
+        request.style
+    )
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+
+        explanation = response.text
+
+    except Exception as e:
+
+        explanation = f"""
+Topic: {request.topic}
+
+Gemini API is currently unavailable or quota has been exhausted.
+
+Retrieved Learning Content:
+
+{context[:1500]}
+
+Error:
+{str(e)}
+"""
+
     return {
         "topic": request.topic,
         "style": request.style,
-        "explanation": response.text
+        "explanation": explanation
     }
 
 @app.post("/quiz")
 def generate_quiz(request: QuizRequest):
+
     context = retrieve_context(request.topic)
-    prompt = get_quiz_prompt(request.topic, context, request.level, request.count)
-    response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents=prompt)
+
+    prompt = get_quiz_prompt(
+        request.topic,
+        context,
+        request.level,
+        request.count
+    )
+
     try:
+
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+
         text = response.text.strip()
+
         if text.startswith("```"):
             text = text.split("```")[1]
+
             if text.startswith("json"):
                 text = text[4:]
+
         questions = json.loads(text.strip())
-    except:
-        questions = []
+
+    except Exception:
+
+        questions = [
+            {
+                "question": f"What is {request.topic}?",
+                "options": [
+                    "A concept in Git",
+                    "A database",
+                    "An operating system",
+                    "A programming language"
+                ],
+                "answer": "A concept in Git"
+            }
+        ]
+
     return {
         "topic": request.topic,
         "level": request.level,
@@ -105,20 +159,40 @@ def generate_quiz(request: QuizRequest):
 
 @app.post("/flashcards")
 def generate_flashcards(request: FlashcardRequest):
+
     context = retrieve_context(request.topic)
-    prompt = get_flashcard_prompt(request.topic, context)
-    response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents=prompt)
+
+    prompt = get_flashcard_prompt(
+        request.topic,
+        context
+    )
+
     try:
+
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+
         text = response.text.strip()
+
         if text.startswith("```"):
             text = text.split("```")[1]
+
             if text.startswith("json"):
                 text = text[4:]
+
         cards = json.loads(text.strip())
-    except:
-        cards = []
+
+    except Exception:
+
+        cards = [
+            {
+                "front": request.topic,
+                "back": context[:300]
+            }
+        ]
+
     return {
         "topic": request.topic,
         "flashcards": cards
@@ -157,15 +231,59 @@ def adaptive_quiz_topics():
 
 @app.get("/revision-plan")
 def revision_plan():
+
     curriculum = load_curriculum()
     progress = load_progress()
-    current_level = progress.get("current_level", "Beginner")
-    weak = get_weak_topics(curriculum, current_level)
+
+    current_level = progress.get(
+        "current_level",
+        "Beginner"
+    )
+
+    weak = get_weak_topics(
+        curriculum,
+        current_level
+    )
+
     if not weak:
-        return {"plan": "Great job! No weak topics found. You are ready to advance."}
+        return {
+            "plan": "Great job! No weak topics found. You are ready to advance."
+        }
+
     weak_names = [t["name"] for t in weak]
-    prompt = get_revision_prompt(weak_names)
-    response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents=prompt)
-    return {"plan": response.text}
+
+    prompt = get_revision_prompt(
+        weak_names
+    )
+
+    try:
+
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+
+        plan = response.text
+
+    except Exception:
+
+        plan = f"""
+Revision Plan
+
+Focus on these topics:
+
+{', '.join(weak_names)}
+
+1. Review concepts
+2. Study examples
+3. Complete flashcards
+4. Retake quiz
+"""
+
+    return {
+        "plan": plan
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=False)

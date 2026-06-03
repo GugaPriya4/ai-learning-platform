@@ -99,6 +99,9 @@ elif page == "knowledge_map":
                         "level": "Beginner",
                         "count": 2
                     })
+                    if r.status_code != 200:
+                        st.error(f"Backend error {r.status_code}: {r.text}")
+                        break
                     data = r.json()
                     for q in data.get("questions", []):
                         q["topic_id"] = topic["id"]
@@ -112,11 +115,12 @@ elif page == "knowledge_map":
         st.markdown(f"**{len(questions)} questions — select your answers:**")
         for i, q in enumerate(questions):
             st.markdown(f"**Q{i+1}: {q['question']}**")
-            options = [f"{k}: {v}" for k, v in q["options"].items()]
-            answer = st.radio("", options, key=f"q_{i}", label_visibility="collapsed")
+            
+            options = q["options"]
+            answer = st.radio("",options,key=f"q_{i}",label_visibility="collapsed")
             if answer:
-                st.session_state.quiz_answers[i] = answer[0]
-            st.markdown("---")
+                st.session_state.quiz_answers[i] = answer
+            st.markdown("---")    
 
         if st.button("Submit Assessment", type="primary"):
             with st.spinner("Analysing your results..."):
