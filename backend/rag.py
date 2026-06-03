@@ -9,7 +9,7 @@ from llama_index.core import Settings
 
 load_dotenv()
 
-CHROMA_PATH = "../chroma_db"
+CHROMA_PATH = str(Path(__file__).parent.parent / "chroma_db")
 
 def get_retriever():
     embed_model = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")

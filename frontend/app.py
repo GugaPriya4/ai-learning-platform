@@ -89,18 +89,22 @@ elif page == "knowledge_map":
 
     if not st.session_state.quiz_questions:
         if st.button("Start Knowledge Assessment", type="primary"):
-            with st.spinner("Generating your personalised assessment..."):
+            with st.spinner("Generating your personalised assessment (this may take a moment)..."):
                 questions = []
-                for topic in beginner_topics[:3]:
+                for topic in beginner_topics:
+                    if len(questions) >= 15:
+                        break
                     r = requests.post(f"{API_URL}/quiz", json={
                         "topic": topic["name"],
-                        "level": "Beginner"
+                        "level": "Beginner",
+                        "count": 2
                     })
                     data = r.json()
-                    if data["questions"]:
-                        q = data["questions"][0]
+                    for q in data.get("questions", []):
                         q["topic_id"] = topic["id"]
                         questions.append(q)
+                        if len(questions) >= 15:
+                            break
                 st.session_state.quiz_questions = questions
                 st.rerun()
     else:

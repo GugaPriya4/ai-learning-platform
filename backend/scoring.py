@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-PROGRESS_FILE = "../progress.json"
+PROGRESS_FILE = Path(__file__).parent.parent / "progress.json"
 
 def load_progress():
     if Path(PROGRESS_FILE).exists():
@@ -15,6 +15,8 @@ def save_progress(progress: dict):
 
 def update_mastery(topic_id: str, correct: int, total: int):
     progress = load_progress()
+    if total == 0:
+        return 0
     score = round((correct / total) * 100)
     progress["topics"][topic_id] = score
     save_progress(progress)

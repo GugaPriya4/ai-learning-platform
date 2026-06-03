@@ -20,9 +20,9 @@ Now teach the topic: {topic}
 Keep your response clear, structured and under 300 words."""
 
 
-def get_quiz_prompt(topic: str, context: str, level: str) -> str:
+def get_quiz_prompt(topic: str, context: str, level: str, count: int = 10) -> str:
     return f"""You are a quiz generator for a Git learning platform.
-Generate exactly 10 multiple choice questions about: {topic}
+Generate exactly {count} multiple choice questions about: {topic}
 Level: {level}
 Use ONLY this content as your source:
 {context}

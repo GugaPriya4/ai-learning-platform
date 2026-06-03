@@ -6,6 +6,6 @@ llama-index
 llama-index-vector-stores-chroma
 llama-index-embeddings-huggingface
 sentence-transformers
-google-generativeai
+google-genai
 python-dotenv
 requests

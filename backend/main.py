@@ -1,6 +1,7 @@
 import os
 import json
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -8,11 +9,9 @@ from dotenv import load_dotenv
 from rag import retrieve_context
 from prompts import get_learning_prompt, get_quiz_prompt, get_flashcard_prompt, get_revision_prompt
 from scoring import update_mastery, get_all_mastery, get_weak_topics, build_adaptive_quiz_topics, check_level_gate, advance_level, load_progress
-
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = FastAPI(title="AI Learning Platform")
 
@@ -24,7 +23,9 @@ app.add_middleware(
 )
 
 def load_curriculum():
-    with open("../curriculum.json", "r") as f:
+    import os
+    path = os.path.join(os.path.dirname(__file__), "..", "curriculum.json")
+    with open(path, "r") as f:
         return json.load(f)
 
 class LearnRequest(BaseModel):
@@ -34,6 +35,7 @@ class LearnRequest(BaseModel):
 class QuizRequest(BaseModel):
     topic: str
     level: str
+    count: int = 10
 
 class FlashcardRequest(BaseModel):
     topic: str
@@ -70,7 +72,9 @@ def get_progress():
 def learn(request: LearnRequest):
     context = retrieve_context(request.topic)
     prompt = get_learning_prompt(request.topic, context, request.style)
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=prompt)
     return {
         "topic": request.topic,
         "style": request.style,
@@ -80,8 +84,10 @@ def learn(request: LearnRequest):
 @app.post("/quiz")
 def generate_quiz(request: QuizRequest):
     context = retrieve_context(request.topic)
-    prompt = get_quiz_prompt(request.topic, context, request.level)
-    response = model.generate_content(prompt)
+    prompt = get_quiz_prompt(request.topic, context, request.level, request.count)
+    response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=prompt)
     try:
         text = response.text.strip()
         if text.startswith("```"):
@@ -101,7 +107,9 @@ def generate_quiz(request: QuizRequest):
 def generate_flashcards(request: FlashcardRequest):
     context = retrieve_context(request.topic)
     prompt = get_flashcard_prompt(request.topic, context)
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=prompt)
     try:
         text = response.text.strip()
         if text.startswith("```"):
@@ -157,5 +165,7 @@ def revision_plan():
         return {"plan": "Great job! No weak topics found. You are ready to advance."}
     weak_names = [t["name"] for t in weak]
     prompt = get_revision_prompt(weak_names)
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=prompt)
     return {"plan": response.text}
