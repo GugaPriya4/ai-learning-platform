@@ -1,0 +1,23 @@
+Git Rebase
+
+Definition:
+Git rebase moves or replays commits from one branch onto another branch, creating a linear project history.
+
+Explanation:
+While merge preserves the complete history with a merge commit, rebase rewrites history to look like the work happened sequentially. It takes all commits from your feature branch and replays them on top of the latest main branch commit.
+
+Rebase vs Merge:
+Merge: preserves exact history, creates merge commit, shows parallel development
+Rebase: rewrites history, linear clean history, looks like sequential development
+
+Real world example:
+Imagine you wrote notes in a notebook while your friend updated the main textbook. Merging is like stapling your notes to the back of the textbook with a note saying these were added later. Rebasing is like rewriting your notes directly into the textbook at the right places as if they were always there.
+
+Common commands:
+- git rebase main (rebase current branch onto main)
+- git rebase -i HEAD~3 (interactive rebase last 3 commits)
+- git rebase --abort (cancel rebase)
+- git rebase --continue (continue after resolving conflicts)
+
+Golden rule:
+Never rebase commits that have been pushed to a shared remote branch. Rebase only local commits or on personal branches.

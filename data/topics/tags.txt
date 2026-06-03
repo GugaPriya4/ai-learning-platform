@@ -1,0 +1,30 @@
+Git Tags
+
+Definition:
+Git tags are named pointers to specific commits, typically used to mark release versions like v1.0 or v2.3.1.
+
+Explanation:
+Tags are similar to branches but they never move. Once you create a tag on a commit, it always points to that exact commit. Tags are used to mark important milestones in your project history, most commonly software releases.
+
+Types of tags:
+Lightweight tag: Just a name pointing to a commit. Simple pointer.
+Annotated tag: Contains tagger name, email, date, and message. Recommended for releases.
+
+Real world example:
+Think of tags like bookmarks in a very long book. You bookmark page 247 and call it Chapter 5 Start. No matter how many more pages get added to the book, your bookmark always stays on page 247. Git tags bookmark specific commits in your project history.
+
+Common commands:
+- git tag (list all tags)
+- git tag v1.0 (create lightweight tag on current commit)
+- git tag -a v1.0 -m "Release version 1.0" (annotated tag)
+- git show v1.0 (see tag details)
+- git push origin v1.0 (push tag to remote)
+- git push origin --tags (push all tags)
+- git checkout v1.0 (switch to tagged commit)
+- git tag -d v1.0 (delete local tag)
+
+Semantic versioning with tags:
+v1.0.0 = Major.Minor.Patch
+Major: Breaking changes
+Minor: New features, backwards compatible
+Patch: Bug fixes

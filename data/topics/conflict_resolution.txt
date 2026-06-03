@@ -1,0 +1,38 @@
+Conflict Resolution
+
+Definition:
+A merge conflict occurs when two branches modify the same part of a file differently and Git cannot automatically determine which change to keep.
+
+Explanation:
+Git is smart enough to automatically merge most changes. But when two developers edit the exact same lines of code, Git cannot decide which version is correct. It marks the conflict in the file and asks you to decide manually.
+
+What a conflict looks like in a file:
+<<<<<<< HEAD
+your changes here
+=======
+their changes here
+>>>>>>> feature-branch
+
+How to resolve:
+1. Open the conflicted file
+2. Find the conflict markers
+3. Choose which version to keep or combine both
+4. Remove the conflict markers
+5. Save the file
+6. git add the file
+7. git commit to complete the merge
+
+Real world example:
+Two developers both fix the same bug differently on separate branches. When merging, Git finds both changes and cannot pick one automatically. You read both fixes, choose the better one or combine them, and complete the merge.
+
+Common commands:
+- git status (see which files have conflicts)
+- git diff (see the conflicts)
+- git mergetool (use visual merge tool)
+- git merge --abort (cancel and start over)
+
+Prevention tips:
+- Communicate with teammates about who works on what
+- Pull frequently to stay updated
+- Keep branches short-lived
+- Make small focused commits

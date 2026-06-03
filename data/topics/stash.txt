@@ -1,0 +1,33 @@
+Git Stash
+
+Definition:
+Git stash temporarily saves uncommitted changes so you can switch contexts without committing incomplete work.
+
+Explanation:
+Sometimes you are in the middle of work and need to switch branches urgently, but you are not ready to commit. Git stash saves your changes in a temporary storage area and reverts your working directory to the last commit.
+
+Real world example:
+Think of stash like putting your work in a drawer when a coworker urgently needs your desk. You clear your desk quickly, help them, then come back and take everything out of the drawer to continue where you left off.
+
+When to use stash:
+- Urgent hotfix needed while working on a feature
+- Need to pull latest changes but have uncommitted work
+- Switching to review a colleague's branch
+- Experimenting and wanting to save current state
+
+Common commands:
+- git stash (save current changes)
+- git stash save "description" (save with description)
+- git stash list (see all stashes)
+- git stash pop (apply most recent stash and remove it)
+- git stash apply (apply stash but keep it in list)
+- git stash drop (delete a stash)
+- git stash clear (delete all stashes)
+
+Step by step:
+1. Working on feature, boss asks for urgent fix
+2. git stash (saves your work)
+3. git checkout main
+4. Fix the bug and commit
+5. git checkout feature-branch
+6. git stash pop (restore your work)

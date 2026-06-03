@@ -1,0 +1,27 @@
+Git Merge
+
+Definition:
+Git merge combines the changes from one branch into another branch, integrating different lines of development.
+
+Explanation:
+When you finish working on a feature branch, you need to bring those changes back into the main branch. Git merge does this by finding the common ancestor of both branches and combining all changes since that point.
+
+Types of merges:
+Fast-forward merge: When the main branch has not changed since you branched off. Git simply moves the pointer forward. No merge commit created.
+Three-way merge: When both branches have new commits. Git creates a new merge commit that has two parents.
+
+Real world example:
+Imagine two writers working on different chapters of the same book. One writes Chapter 3, another writes Chapter 4. Merging is like combining their work into one complete book. If they edited the same paragraph differently, that is a conflict that needs manual resolution.
+
+Common commands:
+- git merge branch-name (merge branch into current branch)
+- git merge --no-ff branch-name (always create merge commit)
+- git merge --abort (cancel a merge in progress)
+- git log --merges (see all merge commits)
+
+Step by step:
+1. git checkout main
+2. git merge feature-branch
+3. If no conflicts, merge is complete
+4. If conflicts, resolve them manually
+5. git add . and git commit to complete merge
