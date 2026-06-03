@@ -1,0 +1,41 @@
+{
+  "course": "Git",
+  "levels": [
+    {
+      "level": "Beginner",
+      "topics": [
+        {"id": "version_control", "name": "Version Control Basics", "prerequisites": [], "mastery": 0},
+        {"id": "what_is_git", "name": "What is Git", "prerequisites": ["version_control"], "mastery": 0},
+        {"id": "repository", "name": "Repository", "prerequisites": ["what_is_git"], "mastery": 0},
+        {"id": "clone", "name": "Clone", "prerequisites": ["repository"], "mastery": 0},
+        {"id": "add", "name": "Add", "prerequisites": ["repository"], "mastery": 0},
+        {"id": "commit", "name": "Commit", "prerequisites": ["add"], "mastery": 0},
+        {"id": "status", "name": "Status", "prerequisites": ["repository"], "mastery": 0},
+        {"id": "push", "name": "Push", "prerequisites": ["commit"], "mastery": 0},
+        {"id": "pull", "name": "Pull", "prerequisites": ["push"], "mastery": 0}
+      ]
+    },
+    {
+      "level": "Intermediate",
+      "topics": [
+        {"id": "branching", "name": "Branching", "prerequisites": ["commit"], "mastery": 0},
+        {"id": "merge", "name": "Merge", "prerequisites": ["branching"], "mastery": 0},
+        {"id": "conflict_resolution", "name": "Conflict Resolution", "prerequisites": ["merge"], "mastery": 0},
+        {"id": "rebase", "name": "Rebase", "prerequisites": ["merge"], "mastery": 0},
+        {"id": "stash", "name": "Stash", "prerequisites": ["branching"], "mastery": 0},
+        {"id": "tags", "name": "Tags", "prerequisites": ["commit"], "mastery": 0}
+      ]
+    },
+    {
+      "level": "Advanced",
+      "topics": [
+        {"id": "cherry_pick", "name": "Cherry Pick", "prerequisites": ["merge"], "mastery": 0},
+        {"id": "hooks", "name": "Hooks", "prerequisites": ["commit"], "mastery": 0},
+        {"id": "git_internals", "name": "Git Internals", "prerequisites": ["what_is_git"], "mastery": 0},
+        {"id": "cicd_integration", "name": "CI/CD Integration", "prerequisites": ["hooks"], "mastery": 0},
+        {"id": "git_workflows", "name": "Git Workflows", "prerequisites": ["branching", "merge"], "mastery": 0},
+        {"id": "monorepo_strategies", "name": "Monorepo Strategies", "prerequisites": ["git_workflows"], "mastery": 0}
+      ]
+    }
+  ]
+}

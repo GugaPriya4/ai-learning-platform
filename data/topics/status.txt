@@ -1,0 +1,41 @@
+Git Status
+
+Definition:
+Git status displays the state of the working directory and staging area, showing which changes are staged, unstaged, and untracked.
+
+Explanation:
+Git status is the most frequently used Git command. It gives you a complete picture of what is happening in your repository right now. It shows you which files you have modified, which are staged for the next commit, and which files Git is not tracking at all.
+
+Three categories git status shows:
+- Staged changes: Files added with git add, ready to commit
+- Unstaged changes: Files modified but not yet added
+- Untracked files: New files Git has never seen before
+
+Real world example:
+Think of git status like a checklist before submitting an assignment. It tells you which pages you have finished and marked for submission, which pages you have edited but not marked yet, and which pages are new and not part of the assignment yet. It gives you a complete overview before you finalize anything.
+
+Common commands:
+- git status (full detailed output)
+- git status -s (short compact output)
+- git status -b (show branch information)
+
+Reading the output:
+Green text = staged, ready to commit
+Red text = modified or untracked, not yet staged
+M = modified
+A = added (new file staged)
+? ? = untracked file
+
+Step by step example:
+1. Edit README.md
+2. Create a new file called notes.txt
+3. Run git status
+4. You see README.md as modified in red
+5. You see notes.txt as untracked in red
+6. Run git add README.md
+7. Run git status again
+8. README.md is now green (staged)
+9. notes.txt is still red (untracked)
+
+Best practice:
+Run git status before and after every git command when learning. It helps you understand exactly what each command does to your repository state.

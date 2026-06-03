@@ -1,0 +1,42 @@
+Git Commit
+
+Definition:
+Git commit saves a snapshot of the staged changes to the repository history with a descriptive message explaining what was changed.
+
+Explanation:
+A commit is the core unit of Git history. Every commit records what changed, who changed it, when it was changed, and why it was changed through the commit message. Commits are permanent and form a chain of history going back to the very first commit.
+
+What a commit contains:
+- A unique SHA hash identifier like a3f4b2c
+- Author name and email
+- Timestamp of when it was made
+- Commit message describing the change
+- Pointer to the previous commit (parent)
+- Snapshot of all staged files
+
+Real world example:
+Think of commits like saving a video game. Every time you reach a checkpoint and save, the game remembers exactly where you were, what items you had, and your score. If you die later, you can reload that save. Git commit is your save point. A good commit message is like labeling the save slot so you remember what state you were in.
+
+Common commands:
+- git commit -m "your message here"
+- git commit -am "message" (stage and commit tracked files together)
+- git commit --amend (modify the most recent commit)
+- git log (view all commits)
+
+Writing good commit messages:
+Bad: git commit -m "fixed stuff"
+Bad: git commit -m "changes"
+Good: git commit -m "Fix login bug when password contains special characters"
+Good: git commit -m "Add user profile page with avatar upload"
+
+Step by step example:
+1. Make changes to your files
+2. Run git add . to stage everything
+3. Run git commit -m "Add navigation menu to homepage"
+4. Run git log to see your commit in history
+
+Best practices:
+- Commit often, each commit should do one thing
+- Write messages in present tense
+- Keep the first line under 50 characters
+- Never commit broken code to main branch

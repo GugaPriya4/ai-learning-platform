@@ -1,0 +1,30 @@
+What is Git
+
+Definition:
+Git is a free, open-source distributed version control system designed to handle projects of all sizes with speed and efficiency.
+
+Explanation:
+Git was created by Linus Torvalds in 2005 to manage the Linux kernel source code. Unlike older version control systems, Git is distributed - every developer has a complete copy of the entire project history on their local machine.
+
+Key characteristics:
+- Distributed: Every clone is a full backup of all data
+- Fast: Most operations are local, no network needed
+- Safe: Git uses checksums to ensure data integrity
+- Branching: Lightweight branches encourage experimentation
+
+How Git works:
+Git thinks of data as snapshots of a filesystem. Every time you commit, Git takes a picture of all your files and stores a reference to that snapshot. If files have not changed, Git stores a link to the previous identical file.
+
+Real world example:
+Imagine you are writing a book with three co-authors. Without Git, you would email Word documents back and forth, losing track of who changed what. With Git, everyone works on their own copy, Git tracks every change, and merging everyone's work is automatic.
+
+Git vs GitHub:
+- Git is the tool that runs on your computer
+- GitHub is a website that hosts your Git repositories online
+- You use Git locally, and push to GitHub to share with others
+
+Basic Git workflow:
+1. Make changes to your files
+2. Stage the changes with git add
+3. Save a snapshot with git commit
+4. Share with others using git push

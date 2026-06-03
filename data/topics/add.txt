@@ -1,0 +1,32 @@
+Git Add
+
+Definition:
+Git add is a command that stages changes in your working directory, marking them to be included in the next commit.
+
+Explanation:
+Git has three areas you need to understand. The working directory is where you edit files. The staging area is where you prepare changes for a commit. The repository is where committed snapshots are stored. Git add moves changes from the working directory to the staging area.
+
+Why staging exists:
+Staging lets you choose exactly which changes to include in a commit. You might have changed 10 files but only want to commit 3 of them. Staging gives you that control.
+
+Real world example:
+Think of staging like packing a suitcase before a trip. Your working directory is your entire wardrobe. The staging area is your open suitcase. Git add is the act of picking specific clothes and placing them in the suitcase. Git commit is closing and locking the suitcase to take on your trip.
+
+Common commands:
+- git add filename.txt (stage a specific file)
+- git add . (stage all changes in current directory)
+- git add *.py (stage all Python files)
+- git add -p (interactively choose which parts of files to stage)
+
+Step by step example:
+1. Edit a file called index.html
+2. Run git status to see it appears as modified
+3. Run git add index.html to stage it
+4. Run git status again to see it now appears as staged
+5. Run git commit to save the snapshot
+
+Important notes:
+- git add does not save anything permanently
+- You can unstage with git restore --staged filename
+- New files must be added before Git tracks them
+- Deleted files can be staged with git add as well

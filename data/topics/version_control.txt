@@ -1,0 +1,26 @@
+Version Control Basics
+
+Definition:
+Version control is a system that tracks changes to files over time, allowing you to recall specific versions later.
+
+Explanation:
+Version control solves the problem of managing changes in a project. Without it, you would need to manually save copies like project_v1, project_v2, project_final, project_final2. Version control does this automatically and intelligently.
+
+Key Concepts:
+- Repository: A database storing all versions of your project
+- Commit: A snapshot of your project at a specific point in time
+- History: A complete record of every change ever made
+- Collaboration: Multiple people can work on the same project without overwriting each other
+
+Why it matters:
+- You can undo mistakes by going back to a previous version
+- You can see exactly what changed, when, and who changed it
+- Multiple developers can work simultaneously without conflicts
+
+Real world example:
+Think of version control like Google Docs version history. Every time you save, Google Docs remembers the previous version. You can go back and see what the document looked like yesterday, last week, or a month ago. Git does the same thing for your code.
+
+Common tools:
+- Git (most popular)
+- SVN
+- Mercurial

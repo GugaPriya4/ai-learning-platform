@@ -1,0 +1,39 @@
+Git Pull
+
+Definition:
+Git pull fetches changes from a remote repository and automatically merges them into your current local branch.
+
+Explanation:
+When teammates push their commits to the remote repository, your local copy becomes outdated. Git pull downloads those new commits and integrates them into your local branch. It is actually two commands combined: git fetch which downloads changes, and git merge which integrates them.
+
+Why pull is important:
+In a team, multiple people push changes to the same repository. Before you start working each day, you should pull to get the latest changes. This prevents conflicts and ensures you are always building on top of the most recent code.
+
+Real world example:
+Think of pull like syncing a shared Google Doc. You have been offline and your teammate made changes. When you come back online and sync, Google Docs downloads all their changes and you see the updated version. Git pull does the same for your code repository.
+
+Common commands:
+- git pull (pull from tracked remote branch)
+- git pull origin main (pull specifically from main branch)
+- git pull --rebase (pull and rebase instead of merge)
+- git fetch (download changes without merging)
+
+Step by step example:
+1. Your teammate pushes a new feature to main
+2. You open your terminal in the project folder
+3. Run git pull origin main
+4. Git downloads their commits
+5. Git merges their changes with yours
+6. You now have all their changes locally
+
+Pull vs Fetch:
+- git fetch: Downloads changes but does not merge them
+- git pull: Downloads AND merges changes automatically
+- Use fetch when you want to see changes before merging
+- Use pull when you trust the changes and want them immediately
+
+Best practices:
+- Pull at the start of every work session
+- Pull before pushing to avoid rejected push errors
+- If you have uncommitted changes, stash them before pulling
+- Use git pull --rebase for a cleaner linear history
