@@ -184,17 +184,44 @@ elif page == "progress":
                 col_c.error("Weak")
 
         st.markdown("---")
-        if prog["can_advance"]:
-            st.success("You are ready to advance to the next level!")
-            if st.button("Advance to Next Level", type="primary"):
+        st.markdown("### Level Progression")
+        
+        if prog["mastery"]:
+            avg = round(sum(t["score"] for t in prog["mastery"].values()) / len(prog["mastery"]))
+        else:
+            avg = 0
+
+        st.markdown(f"**Current Level:** {prog['current_level']}")
+        st.markdown(f"**Your Average Score:** {avg}%")
+        st.markdown(f"**Required to Advance:** 85%")
+
+        if avg < 85:
+            st.progress(avg / 100)
+            st.warning(f"You need {85 - avg}% more to unlock the next level.")
+            st.markdown("**Focus on these weak topics:**")
+            if prog["weak_topics"]:
+                for t in prog["weak_topics"]:
+                    st.error(f"• {t['name']} — {t['score']}%")
+            else:
+                st.info("Take the adaptive quiz to update your scores.")
+
+        elif avg >= 85 and prog["current_level"] != "Advanced":
+            st.progress(1.0)
+            st.success(f"🎉 You scored {avg}% — You have unlocked the next level!")
+            st.markdown("You have demonstrated mastery of all topics in this level.")
+            if st.button("➡️ Advance to Next Level", type="primary"):
                 r = requests.post(f"{API_URL}/advance")
                 data = r.json()
                 if data["advanced"]:
                     st.balloons()
-                    st.success(f"Congratulations! You advanced to {data['new_level']}!")
+                    st.success(f"You have advanced to {data['new_level']} level!")
+                    st.markdown("Go to **Knowledge Map** to start your new level assessment.")
                     st.rerun()
-        else:
-            st.info("Score 85% average across all topics to advance to the next level.")
+
+        elif prog["current_level"] == "Advanced":
+            st.progress(1.0)
+            st.success("🏆 You have completed all levels. You are an Advanced Git user!")
+
     except Exception as e:
         st.error(f"Error loading progress: {e}")
 
