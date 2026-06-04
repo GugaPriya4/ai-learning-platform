@@ -117,7 +117,9 @@ elif page == "knowledge_map":
             st.markdown(f"**Q{i+1}: {q['question']}**")
             
             options = q["options"]
-            answer = st.radio("",options,key=f"q_{i}",label_visibility="collapsed")
+            answer = st.radio("", ["-- Select an answer --"] + options, key=f"q_{i}", label_visibility="collapsed", index=0)
+            if answer != "-- Select an answer --":
+                st.session_state.quiz_answers[i] = answer[0]
             if answer:
                 st.session_state.quiz_answers[i] = answer
             st.markdown("---")    

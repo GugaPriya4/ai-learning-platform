@@ -72,35 +72,15 @@ def get_progress():
 @app.post("/learn")
 def learn(request: LearnRequest):
     context = retrieve_context(request.topic)
-    prompt = get_learning_prompt(
-        request.topic,
-        context,
-        request.style
-    )
-
+    prompt = get_learning_prompt(request.topic, context, request.style)
     try:
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash-exp",
             contents=prompt
         )
-
         explanation = response.text
-
     except Exception as e:
-
-        explanation = f"""
-Topic: {request.topic}
-
-Gemini API is currently unavailable or quota has been exhausted.
-
-Retrieved Learning Content:
-
-{context[:1500]}
-
-Error:
-{str(e)}
-"""
-
+        explanation = f"Gemini API is currently unavailable or quota has been exhausted. Please wait 60 seconds and try again.\n\nError: {str(e)}"
     return {
         "topic": request.topic,
         "style": request.style,
@@ -122,7 +102,7 @@ def generate_quiz(request: QuizRequest):
     try:
 
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash-exp",
             contents=prompt
         )
 
@@ -159,40 +139,26 @@ def generate_quiz(request: QuizRequest):
 
 @app.post("/flashcards")
 def generate_flashcards(request: FlashcardRequest):
-
     context = retrieve_context(request.topic)
-
-    prompt = get_flashcard_prompt(
-        request.topic,
-        context
+    prompt = get_flashcard_prompt(request.topic, context)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash-exp",
+        contents=prompt
     )
-
     try:
-
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=prompt
-        )
-
         text = response.text.strip()
-
-        if text.startswith("```"):
+        if "```" in text:
             text = text.split("```")[1]
-
             if text.startswith("json"):
                 text = text[4:]
-
-        cards = json.loads(text.strip())
-
-    except Exception:
-
-        cards = [
-            {
-                "front": request.topic,
-                "back": context[:300]
-            }
-        ]
-
+        text = text.strip()
+        cards = json.loads(text)
+        if not isinstance(cards, list):
+            cards = []
+    except Exception as e:
+        print(f"Flashcard parse error: {e}")
+        print(f"Raw response: {response.text}")
+        cards = []
     return {
         "topic": request.topic,
         "flashcards": cards
@@ -259,7 +225,7 @@ def revision_plan():
     try:
 
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash-exp",
             contents=prompt
         )
 
