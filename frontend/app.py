@@ -326,9 +326,12 @@ elif page == "adaptive_quiz":
     st.markdown("This quiz focuses 80% on your weak topics and 20% on next level preview.")
 
     if not st.session_state.quiz_questions:
-        r = requests.get(f"{API_URL}/adaptive-quiz-topics")
-        topics_data = r.json()
-        topics = topics_data.get("topics", [])
+        try:
+            r = requests.get(f"{API_URL}/adaptive-quiz-topics")
+            topics_data = r.json()
+            topics = topics_data.get("topics", [])
+        except:
+            topics = []
 
         if not topics:
             st.info("Complete the knowledge assessment first to get your adaptive quiz.")
@@ -341,15 +344,20 @@ elif page == "adaptive_quiz":
                 with st.spinner("Generating your personalised quiz..."):
                     questions = []
                     for topic in topics[:4]:
-                        r = requests.post(f"{API_URL}/quiz", json={
-                            "topic": topic["name"],
-                            "level": "Beginner"
-                        })
-                        data = r.json()
-                        if data["questions"]:
-                            q = data["questions"][0]
-                            q["topic_id"] = topic["id"]
-                            questions.append(q)
+                        try:
+                            r = requests.post(f"{API_URL}/quiz", json={
+                                "topic": topic["name"],
+                                "level": "Beginner",
+                                "count": 2
+                            })
+                            data = r.json()
+                            for q in data.get("questions", []):
+                                q["topic_id"] = topic["id"]
+                                questions.append(q)
+                                if len(questions) >= 8:
+                                    break
+                        except:
+                            continue
                     st.session_state.quiz_questions = questions
                     st.rerun()
     else:
@@ -358,47 +366,74 @@ elif page == "adaptive_quiz":
 
         for i, q in enumerate(questions):
             st.markdown(f"**Q{i+1}: {q['question']}**")
-            options = [f"{k}: {v}" for k, v in q["options"].items()]
-            answer = st.radio("", options, key=f"aq_{i}", label_visibility="collapsed")
-            if answer:
+            try:
+                if isinstance(q["options"], dict):
+                    options_list = [f"{k}: {v}" for k, v in q["options"].items()]
+                elif isinstance(q["options"], list):
+                    options_list = q["options"]
+                else:
+                    options_list = []
+            except:
+                options_list = []
+
+            answer = st.radio(
+                "",
+                ["-- Select an answer --"] + options_list,
+                key=f"aq_{i}",
+                label_visibility="collapsed",
+                index=0
+            )
+            if answer and answer != "-- Select an answer --":
                 st.session_state.quiz_answers[i] = answer[0]
             st.markdown("---")
 
         if st.button("Submit Quiz", type="primary"):
-            correct_count = sum(
-                1 for i, q in enumerate(questions)
-                if st.session_state.quiz_answers.get(i) == q["answer"]
-            )
+            correct_count = 0
+            for i, q in enumerate(questions):
+                user_ans = st.session_state.quiz_answers.get(i, "")
+                correct_ans = q.get("answer", "")
+                if user_ans and correct_ans and user_ans.upper() == correct_ans.upper():
+                    correct_count += 1
+
             total = len(questions)
-            score = round((correct_count / total) * 100)
+            score = round((correct_count / total) * 100) if total > 0 else 0
             st.markdown(f"### Your Score: {correct_count}/{total} ({score}%)")
 
             for i, q in enumerate(questions):
                 user_ans = st.session_state.quiz_answers.get(i, "")
-                if user_ans == q["answer"]:
-                    st.success(f"Q{i+1}: Correct")
+                correct_ans = q.get("answer", "")
+                if user_ans and correct_ans and user_ans.upper() == correct_ans.upper():
+                    st.success(f"Q{i+1}: Correct ✓")
                 else:
-                    st.error(f"Q{i+1}: Wrong — correct answer is {q['answer']}: {q['options'][q['answer']]}")
-                    st.info(f"Explanation: {q['explanation']}")
+                    st.error(f"Q{i+1}: Wrong — correct answer is {correct_ans}")
+                    st.info(f"Explanation: {q.get('explanation', 'No explanation available')}")
 
             topic_results = {}
             for i, q in enumerate(questions):
-                tid = q["topic_id"]
+                tid = q.get("topic_id", "")
+                if not tid:
+                    continue
                 if tid not in topic_results:
                     topic_results[tid] = {"correct": 0, "total": 0}
                 topic_results[tid]["total"] += 1
-                if st.session_state.quiz_answers.get(i) == q["answer"]:
+                user_ans = st.session_state.quiz_answers.get(i, "")
+                correct_ans = q.get("answer", "")
+                if user_ans and correct_ans and user_ans.upper() == correct_ans.upper():
                     topic_results[tid]["correct"] += 1
 
             for tid, result in topic_results.items():
-                requests.post(f"{API_URL}/assess", json={
-                    "topic_id": tid,
-                    "correct": result["correct"],
-                    "total": result["total"]
-                })
+                try:
+                    requests.post(f"{API_URL}/assess", json={
+                        "topic_id": tid,
+                        "correct": result["correct"],
+                        "total": result["total"]
+                    })
+                except:
+                    pass
 
             st.session_state.quiz_questions = []
             st.session_state.quiz_answers = {}
+            st.success("Quiz complete! Go to My Progress to see updated scores.")
 
 elif page == "revision":
     st.title("Revision Plan")
