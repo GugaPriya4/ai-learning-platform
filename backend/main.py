@@ -75,7 +75,7 @@ def learn(request: LearnRequest):
     prompt = get_learning_prompt(request.topic, context, request.style)
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model="models/gemini-2.5-flash",
             contents=prompt
         )
         explanation = response.text
@@ -102,7 +102,7 @@ def generate_quiz(request: QuizRequest):
     try:
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model="models/gemini-2.5-flash",
             contents=prompt
         )
 
@@ -142,7 +142,7 @@ def generate_flashcards(request: FlashcardRequest):
     context = retrieve_context(request.topic)
     prompt = get_flashcard_prompt(request.topic, context)
     response = client.models.generate_content(
-        model="gemini-2.0-flash-exp",
+        model="models/gemini-2.5-flash",
         contents=prompt
     )
     try:
@@ -225,7 +225,7 @@ def revision_plan():
     try:
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model="models/gemini-2.5-flash",
             contents=prompt
         )
 

@@ -117,12 +117,23 @@ elif page == "knowledge_map":
             st.markdown(f"**Q{i+1}: {q['question']}**")
             
             options = q["options"]
-            answer = st.radio("", ["-- Select an answer --"] + options, key=f"q_{i}", label_visibility="collapsed", index=0)
-            if answer != "-- Select an answer --":
+            if isinstance(options, dict):
+                options_list = [f"{k}: {v}" for k, v in options.items()]
+            elif isinstance(options, list):
+                options_list = options
+            else:
+                options_list = []
+
+            answer = st.radio(
+                "",
+                ["-- Select an answer --"] + options_list,
+                key=f"q_{i}",
+                label_visibility="collapsed",
+                index=0
+            )
+            if answer and answer != "-- Select an answer --":
                 st.session_state.quiz_answers[i] = answer[0]
-            if answer:
-                st.session_state.quiz_answers[i] = answer
-            st.markdown("---")    
+            st.markdown("---")
 
         if st.button("Submit Assessment", type="primary"):
             with st.spinner("Analysing your results..."):

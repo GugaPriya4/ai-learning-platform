@@ -1,13 +1,13 @@
 {
   "current_level": "Beginner",
   "topics": {
-    "version_control": 0,
-    "what_is_git": 0,
+    "version_control": 50,
+    "what_is_git": 50,
     "repository": 100,
     "clone": 100,
-    "add": 100,
+    "add": 50,
     "commit": 0,
-    "status": 0,
+    "status": 50,
     "push": 0,
     "pull": 0
   }
